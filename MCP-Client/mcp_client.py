@@ -1,6 +1,7 @@
 import asyncio
 import os
-from langchain_ollama.chat_models import ChatOllama from mcp_use import MCPAgent, MCPClient
+from langchain_ollama.chat_models import ChatOllama
+from mcp_use import MCPAgent, MCPClient
 
 # MCP server config
 AUTH_TOKEN="secret-token"
