@@ -1,0 +1,80 @@
+FROM debian:trixie-slim as install
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+#SHELL ["/bin/bash", "-c"]
+RUN rm /bin/sh \
+  && ln -s /bin/bash /bin/sh
+
+# install dependencies
+RUN apt update && apt upgrade -y \
+  && apt install -y --no-install-recommends --no-install-suggests ca-certificates git curl libyaml-dev build-essential libssl-dev zlib1g-dev \
+  && rm -rf "/var/lib/apt/lists/*" \
+  && rm -rf /var/cache/apt/archives
+
+# add user and set home directory
+ARG USER=rails
+RUN useradd --create-home --shell /bin/bash $USER
+ARG HOME="/home/$USER"
+WORKDIR $HOME
+USER $USER
+
+# install Ruby using rbenv
+ENV PATH="$HOME/.rbenv/bin:$PATH"
+RUN git clone https://github.com/rbenv/rbenv.git --depth 1 ~/.rbenv \
+  && ~/.rbenv/bin/rbenv init \
+  && rbenv --version \
+  && mkdir "$(rbenv root)"/plugins/ \
+  && git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build \
+  && rbenv install 3.4.7 \
+  && rbenv global 3.4.7
+ENV PATH="$HOME/.rbenv/shims:$PATH"
+
+WORKDIR /rails/demo
+
+# install Rails and initialize a new Rails app
+RUN bundle init \
+  && bundle add rails --version "~> 8.1.1" \
+  && bundle exec rails new . --force --skip-git --database=sqlite3 --api
+# FastMCP
+RUN bundle add fast-mcp \
+  && bin/rails generate fast_mcp:install \
+  && sed -i 's/# authenticate: true/authenticate: true/g' config/initializers/fast_mcp.rb \
+  && sed -i 's/# auth_token: 'your-token'/auth_token: 'secret-token'/g' config/initializers/fast_mcp.rb
+# ToDo Model
+RUN bundle exec rails generate model Todo title:string completed:boolean \
+  && RAILS_ENV=production bundle exec rails db:migrate
+
+# new stage for Rails app
+FROM debian:trixie-slim as rails
+
+# install dependencies
+RUN apt update && apt upgrade -y \
+  && apt install -y --no-install-recommends --no-install-suggests libyaml-dev libssl-dev openssl \
+  && rm -rf "/var/lib/apt/lists/*" \
+  && rm -rf /var/cache/apt/archives
+
+# add user and set home directory
+ARG USER=rails
+RUN useradd --create-home --shell /bin/bash $USER
+ARG HOME="/home/$USER"
+WORKDIR $HOME
+USER $USER
+
+# copy rbenv, Ruby and Rails App from install stage
+COPY --from=install $HOME/.rbenv $HOME/.rbenv
+ENV PATH="$HOME/.rbenv/shims:$PATH"
+COPY --from=install /rails/demo /rails/demo
+
+WORKDIR /rails/demo
+
+RUN mkdir config/certificates \
+  && openssl req -x509 -sha256 -nodes -newkey rsa:4096 -keyout config/certificates/localhost.key -out config/certificates/localhost.crt -subj "/CN=localhost" -days 365
+
+ENV RAILS_ENV=production
+
+EXPOSE 3000
+
+HEALTHCHECK --interval=35s --timeout=4s CMD curl --insecure --fail https://localhost:3000/up || exit 1
+
+CMD ["bundle", "exec", "rails", "server", "-b", "ssl://0.0.0.0:3000?key=config/certificates/localhost.key&cert=config/certificates/localhost.crt", "-p", "3000"]
