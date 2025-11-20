@@ -41,7 +41,8 @@ RUN bundle add fast-mcp \
   && bin/rails generate fast_mcp:install \
   && sed -i 's/# authenticate: true/authenticate: true/g' config/initializers/fast_mcp.rb \
   && sed -i "s/# auth_token: 'your-token'/auth_token: 'secret-token'/g" config/initializers/fast_mcp.rb \
-  && sed -i 's$rails_health_check$rails_health_check\n  mount FastMcp::RackApp => "/mcp"$g' config/routes.rb
+  && sed -i 's$rails_health_check$rails_health_check\n  mount FastMcp::RackApp => "/mcp"$g' config/routes.rb \
+  && echo "\nFastMcp::Server.define do\n    resource :todos do\n        list { Todo.all }\n        get { |id| Todo.find(id) }\n        create { |attrs| Todo.create!(attrs.slice("title","done")) }\n        update { |id, attrs| t = Todo.find(id); t.update!(attrs.slice("title","done")); t }\n        delete { |id| Todo.find(id).destroy! }\n    end\nend" >> config/initializers/fast_mcp.rb
 # ToDo Model
 RUN bundle exec rails generate model Todo title:string completed:boolean \
   && RAILS_ENV=production bundle exec rails db:migrate
