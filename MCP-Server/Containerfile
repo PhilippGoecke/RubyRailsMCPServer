@@ -40,7 +40,7 @@ RUN bundle init \
 RUN bundle add fast-mcp \
   && bin/rails generate fast_mcp:install \
   && sed -i 's/# authenticate: true/authenticate: true/g' config/initializers/fast_mcp.rb \
-  && sed -i 's/# auth_token: 'your-token'/auth_token: 'secret-token'/g' config/initializers/fast_mcp.rb
+  && sed -i "s/# auth_token: 'your-token'/auth_token: 'secret-token'/g" config/initializers/fast_mcp.rb
 # ToDo Model
 RUN bundle exec rails generate model Todo title:string completed:boolean \
   && RAILS_ENV=production bundle exec rails db:migrate
