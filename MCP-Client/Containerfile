@@ -33,7 +33,7 @@ RUN pip install fastmcp \
   && pip install httpx \
   && pip install langchain-ollama \
   && pip install mcp-use \
-  && pip install mcp \
+  && pip install mcp
 
 COPY mcp_client.py .
 
