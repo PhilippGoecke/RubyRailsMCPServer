@@ -17,7 +17,11 @@ CONFIG = {
 
 async def main():
     client = MCPClient.from_dict(CONFIG)
-    llm = ChatOllama(model="qwen3:8b", base_url="http://host.containers.internal:11434")
+    llm = ChatOllama(
+      model="qwen3:8b",
+      base_url="http://host.containers.internal:11434",
+      headers={"Authorization": "Bearer secret-key"},
+    )
 
     # LLM Agent of the MCPClient
     agent = MCPAgent(llm=llm, client=client, max_steps=20)
