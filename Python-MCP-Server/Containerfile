@@ -29,7 +29,8 @@ RUN pyenv install --list | grep -A7 $PYTHON_VERSION \
 
 WORKDIR $HOME/app
 
-RUN pip install fastmcp \
+RUN pip install --upgrade pip \
+  && pip install fastmcp \
   && pip install starlette
 
 COPY mcp_server.py .
