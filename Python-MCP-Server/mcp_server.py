@@ -16,9 +16,14 @@ verifier = StaticTokenVerifier(
 mcp = FastMCP(name="MyTestServer", auth=verifier)
 
 @mcp.tool
-def greet(name: str) -> str:
-    """Greet a user by name."""
-    return f"Hello, {name}!"
+def list_todos() -> list[dict]:
+    """Return a list of todo items."""
+    return [
+        {"id": 1, "title": "Write documentation", "completed": False},
+        {"id": 2, "title": "Implement authentication", "completed": True},
+        {"id": 3, "title": "Add health check endpoint", "completed": True},
+        {"id": 4, "title": "Add Tests", "completed": False},
+    ]
 
 @mcp.custom_route("/health", methods=["GET"])
 async def health_check(request: Request) -> PlainTextResponse:
