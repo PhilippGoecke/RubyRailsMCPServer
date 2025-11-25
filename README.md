@@ -1,7 +1,7 @@
 # RubyRailsMCPServer
-Ruby Rails MCP Server
+Ruby Rails MCP Server  
 
-WIP - do not use
+WIP - do not use  
 
-https://github.com/yjacquin/fast-mcp
-https://gofastmcp.com/clients/client
+https://github.com/yjacquin/fast-mcp  
+https://gofastmcp.com/clients/client  
