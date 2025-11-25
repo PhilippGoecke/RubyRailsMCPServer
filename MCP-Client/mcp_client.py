@@ -3,13 +3,15 @@ import os
 from langchain_ollama.chat_models import ChatOllama
 from mcp_use import MCPAgent, MCPClient
 
-# MCP server config
+SECRET_TOKEN = os.getenv("MCP_SECRET_TOKEN", "secret-token")
+MCP_SERVER = os.getenv("MCP_SERVER", "http://host.containers.internal:3000/mcp")
+
 CONFIG = {
   "mcpServers": {
     "http_server": {
-      "url": "http://host.containers.internal:3000/mcp",
+      "url": MCP_SERVER,
       "headers": {
-        "Authorization": "Bearer secret-token"
+        "Authorization": f"Bearer {SECRET_TOKEN}"
       }
     }
   }
@@ -17,10 +19,13 @@ CONFIG = {
 
 async def main():
     client = MCPClient.from_dict(CONFIG)
+    OLLAMA_API_KEY = os.getenv("OLLAMA_API_KEY", "secret-key")
+    OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://host.containers.internal:11434")
+    MODEL = os.getenv("OLLAMA_MODEL", "qwen3:8b")
     llm = ChatOllama(
-      model="qwen3:8b",
-      base_url="http://host.containers.internal:11434",
-      headers={"Authorization": "Bearer secret-key"},
+      model=MODEL,
+      base_url=OLLAMA_HOST,
+      headers={"Authorization": f"Bearer {OLLAMA_API_KEY}"},
     )
 
     # LLM Agent of the MCPClient
