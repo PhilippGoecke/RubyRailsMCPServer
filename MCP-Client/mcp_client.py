@@ -4,7 +4,7 @@ from langchain_ollama.chat_models import ChatOllama
 from mcp_use import MCPAgent, MCPClient
 
 SECRET_TOKEN = os.getenv("MCP_SECRET_TOKEN", "secret-token")
-MCP_SERVER = os.getenv("MCP_SERVER", "http://host.containers.internal:3000/mcp")
+MCP_SERVER = os.getenv("MCP_SERVER", "http://host.containers.internal:3000/mcp/sse")
 
 CONFIG = {
   "mcpServers": {
