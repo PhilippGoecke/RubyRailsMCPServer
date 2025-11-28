@@ -4,6 +4,7 @@ Ruby Rails MCP Server
 WIP - do not use  
 
 https://github.com/yjacquin/fast-mcp  
+https://github.com/ACR1209/rails-mcp-demo  
 https://gofastmcp.com/clients/client  
 
 https://ollama.com/  
