@@ -1,48 +1,16 @@
-MCP.define("todos") do
-  #
-  # LIST – alle Todos abrufen
-  #
-  tool "list", desc: "List all todos" do |_args|
-    Todo.all.map do |t|
-      {
-        id: t.id,
-        title: t.title,
-        completed: t.completed
-      }
-    end
+# frozen_string_literal: true
+
+class SampleTool < ApplicationTool
+  description 'Greet a user'
+
+  arguments do
+    required(:id).filled(:integer).description('ID of the user to greet')
+    optional(:prefix).filled(:string).description('Prefix to add to the greeting')
   end
 
-  #
-  # CREATE – neues Todo erstellen
-  #
-  tool "create", desc: "Create a new todo" do |args|
-    raise ArgumentError, "title is required" if args["title"].to_s.strip.empty?
+  def call(id:, prefix: 'Hey')
+    user = User.find(id)
 
-    todo = Todo.create!(
-      title: args["title"],
-      completed: args["completed"] || false
-    )
-
-    {
-      id: todo.id,
-      title: todo.title,
-      completed: todo.completed
-    }
-  end
-
-  #
-  # TOGGLE – Status umschalten
-  #
-  tool "toggle", desc: "Toggle completed state" do |args|
-    raise ArgumentError, "id is required" unless args["id"]
-
-    todo = Todo.find(args["id"])
-    todo.update!(completed: !todo.completed)
-
-    {
-      id: todo.id,
-      title: todo.title,
-      completed: todo.completed
-    }
+    "#{prefix} #{user.first_name} !"
   end
 end
