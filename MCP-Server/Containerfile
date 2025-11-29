@@ -48,6 +48,7 @@ RUN bundle add fast-mcp \
   && sed -i "s/Rails.application.routes.draw do/require 'fast_mcp'\n\nRails.application.routes.draw do/g" config/routes.rb \
   && rm app/tools/sample_tool.rb app/resources/sample_resource.rb
 COPY get_todos_tool.rb app/tools/
+COPY create_todo_tool.rb app/tools/
 #COPY todo_resource.rb app/resources/
 
 # new stage for Rails app
