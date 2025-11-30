@@ -42,6 +42,7 @@ class CreateTodoTool < ApplicationTool
         created_at: todo.created_at.iso8601,
         updated_at: todo.updated_at.iso8601
       }
+      Rails.logger.info("Todo '#{todo.id}' updated.")
     else
       todo = Todo.create!(title: title, completed: completed)
       {
@@ -51,6 +52,7 @@ class CreateTodoTool < ApplicationTool
         created_at: todo.created_at.iso8601,
         updated_at: todo.updated_at.iso8601
       }
+      Rails.logger.info("Todo '#{todo.id}' created.")
     end
   rescue StandardError => e
     { error: e.message }
