@@ -7,6 +7,12 @@ if podman container exists ollama; then
 else
     echo "Container 'ollama' not found. Creating and starting a new one..."
     podman run --detach --gpus=all -v ollama:/root/.ollama --publish 11434:11434 --env OLLAMA_API_KEY=secret-key --name ollama docker.io/ollama/ollama
+    # Wait for the container to be in the 'running' state
+    echo "Waiting for the container to start..."
+    while [[ "$(podman inspect -f '{{.State.Status}}' ollama)" != "running" ]]; do
+        sleep 1
+    done
+    echo "Container is running."
     podman exec -it ollama ollama pull qwen3:8b
 fi
 
