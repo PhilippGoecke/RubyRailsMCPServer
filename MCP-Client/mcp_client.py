@@ -36,6 +36,8 @@ async def main():
     print("\n LLM Reply:", result)
     result = await agent.run("Add MCP Server Setup to my tasks.")
     print("\n LLM Reply:", result)
+    result = await agent.run("Update MCP Server Setup to be finished.")
+    print("\n LLM Reply:", result)
 
     # Close all MCPClient sessions
     await client.close_all_sessions()
