@@ -32,7 +32,9 @@ async def main():
     agent = MCPAgent(llm=llm, client=client, max_steps=20)
 
     # Prompt the Agent
-    result = await agent.run("Tell me all Todo's")
+    result = await agent.run("Tell me all Todo's.")
+    print("\n LLM Reply:", result)
+    result = await agent.run("Add MCP Server Setup to my tasks.")
     print("\n LLM Reply:", result)
 
     # Close all MCPClient sessions
