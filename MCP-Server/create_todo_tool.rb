@@ -6,13 +6,20 @@ class CreateTodoTool < ApplicationTool
     You can specify the title and whether the todo is done.
     If you don't specify a title, it will return an error.
     If you don't specify whether the todo is done when creating, it will default to false.
+    Before creating a todo, check if a todo with the same title already exists.
     If the todo is created successfully, it will return the created todo with its attributes.
     If the todo is updated successfully, it will return the updated todo with its attributes.
     If there is an error, it will return an error message.
-    Expected request format:
+    Expected request format for create:
     {
       "title": "implement Rails MCP Server",
       "completed": false
+    }
+    Expected request format for update:
+    {
+      "id": 1,
+      "title": "implement Rails MCP Server",
+      "completed": true
     }
     Expected response format:
     {
